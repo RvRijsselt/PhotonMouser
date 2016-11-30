@@ -25,7 +25,7 @@ curl "https://api.particle.io/v1/devices/3e0041000447343138333038/squeek" -d "ar
 */
 
 Servo myservo;
-HC_SR04 rangefinder = HC_SR04(trigPin, echoPin, 5, 30);
+HC_SR04 rangefinder = HC_SR04(trigPin, echoPin, 2, 60);
 
 void setup()
 {
@@ -90,6 +90,10 @@ void lookSmart()
 }
 
 int sensorPos = 0;
+float leftEngine = 0.0f;
+float rightEngine = 0.0f;
+
+
 
 void follow()
 {
@@ -104,27 +108,86 @@ void follow()
     {
         sensorPos = (sensorPos + 4);
     }
-    sensorPos = constrain(sensorPos, -30, 30);
+    sensorPos = sensorPos > 30 ? 30 : sensorPos < -30 ? -30 : sensorPos;
 
     // Move to new pos
     myservo.write(sensorPos + Forward);
     delay(20);
 
+    Serial.println("Sensor: ");
+    Serial.println(sensorPos);
+    Serial.println(cm);
+
+    // forward/backwards
+    if (cm > 20)
+    {
+        leftEngine += 0.2f;
+        rightEngine += 0.2f;
+    }
+    else if (cm < 10)
+    {
+        leftEngine -= 0.2f;
+        rightEngine -= 0.2f;
+    }
+    else if (cm > 10 && cm < 20)
+    {
+      leftEngine = rightEngine = 0.0f;
+    }
+
     // Turn robot
     if (sensorPos < -20)
     {
         sensorPos = -18;
-        //turn(true);
+        leftEngine += -0.2f;
+        rightEngine += 0.2f;
     }
     else if (sensorPos > 20)
     {
         sensorPos = 18;
-        //turn(false);
+        leftEngine += 0.2f;
+        rightEngine += -0.2f;
     }
     else
     {
-        stop();
+      //leftEngine = rightEngine = 0.0f;
     }
+
+    leftEngine = constrain(leftEngine, -1.0f, 1.0f);
+    rightEngine = constrain(rightEngine, -1.0f, 1.0f);
+
+    engageEngines(leftEngine, rightEngine);
+
+      //Serial.println("Engine: ");
+      //Serial.println(leftEngine);
+      //Serial.println(rightEngine);
+}
+
+void move()
+{
+  cm = rangefinder.getDistanceCM();
+
+  if (cm == -1 || cm > 40)
+  {
+    leftEngine += 0.2f;
+    rightEngine += 0.2f;
+  }
+  else if (cm < 15)
+  {
+    leftEngine -= 0.4f;
+    rightEngine -= 0.4f;
+  }
+  else if (cm > 20 && cm < 30)
+  {
+    leftEngine = rightEngine = 0.0f;
+  }
+
+  leftEngine = constrain(leftEngine, -1.0f, 1.0f);
+  rightEngine = constrain(rightEngine, -1.0f, 1.0f);
+  engageEngines(leftEngine, rightEngine);
+
+        //Serial.println("Engine: ");
+        //Serial.println(leftEngine);
+        //Serial.println(rightEngine);
 }
 
 void loop()
@@ -135,6 +198,7 @@ void loop()
     {
         follow();
         //lookSmart();
+        //move();
     }
     else
     {

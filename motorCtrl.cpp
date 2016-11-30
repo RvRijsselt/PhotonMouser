@@ -19,6 +19,36 @@ void setupMotor()
     pinMode(pwmB, OUTPUT);
 }
 
+const float MinSpeed = 0.4f;
+
+void engageEngines(float left, float right)
+{
+  bool leftDir = left > 0;
+  bool rightDir = right > 0;
+  float absLeft = leftDir ? left : -left;
+  float absRight = rightDir ? right : -right;
+
+  if (absLeft < MinSpeed)
+  {
+    absLeft = 0;
+  }
+  if (absRight < MinSpeed)
+  {
+    absRight = 0;
+  }
+
+  digitalWrite(dirA1, leftDir ? HIGH : LOW);
+  digitalWrite(dirA2, leftDir ? LOW : HIGH);
+
+  digitalWrite(dirB1, rightDir ? HIGH : LOW);
+  digitalWrite(dirB2, rightDir ? LOW : HIGH);
+
+  byte leftSpeed = absLeft * 255.0;
+  byte rightSpeed = absRight * 255.0;
+  analogWrite(pwmA, leftSpeed);
+  analogWrite(pwmB, rightSpeed);
+}
+
 void forward(bool dir)
 {
     digitalWrite(dirA1, dir ? HIGH : LOW);
