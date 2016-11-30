@@ -1,0 +1,3 @@
+[submodule "Spark_HC_SR04"]
+	path = Spark_HC_SR04
+	url = https://github.com/simonmonk/Spark_HC_SR04.git
