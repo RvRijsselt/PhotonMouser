@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <title>(M)ouse (O)perating (S)ystem</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 10px;
+        }
+
+        .button {
+            background-color: #f44336;
+            /* Red */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 12px;
+            -webkit-transition-duration: 0.4s;
+            /* Safari */
+            transition-duration: 0.4s;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .button:hover {
+            background-color: #8a2a21
+        }
+
+        .button:active {
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+
+        .blue {
+            background-color: #3643f4;
+        }
+
+        .blue:hover {
+            background-color: #212a8a
+        }
+
+        p {
+            font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+            font-size: 16px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: 400;
+            line-height: 20px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        p:first-letter {
+            float: left;
+            font-size: 28px;
+            line-height: 1;
+            margin: 2px 5px 0 0;
+        }
+
+        article {
+            margin-bottom: 30px;
+        }
+
+        #bootSeq {
+            display: none;
+            background-color: #443333;
+            color: #eeffff;
+            height: 140px;
+            overflow: scroll;
+        }
+
+        #controlBtn {
+            display: none;
+			padding: 10px;
+			padding-bottom: 30px;
+        }
+
+        #warning_panel {
+            display: none;
+        }
+
+        footer {
+            margin-top: 80px;
+            color: white;
+        }
+    </style>
+    <script language="javascript">
+        $.ajaxSetup({
+            type: 'POST',
+            timeout: 10000,
+            error: function(xhr) {
+                $('#warning_panel').show();
+                $('#display_error').html('There seems to be an error; contact your administrator... Error: ' + xhr.status + ' ' + xhr.statusText);
+            }
+        })
+
+
+        function DoSqueek(arg) {
+            //w
+            var data = {
+                args: arg,
+                access_token: "<accesstoken>"
+            };
+            $.post("https://api.particle.io/v1/devices/<deviceid>/squeek",
+                data,
+                function(data, status) {
+                    $('#warning_panel').hide();
+                });
+        }
+
+        function CheckStatus() {
+            var data = {
+                args: "ping",
+                access_token: "<accesstoken>"
+            };
+            $.post("https://api.particle.io/v1/devices/<deviceid>/squeek", data,
+                function(data, status) {
+                    if (data.return_value == 1234) {
+                        $("#startBtn").hide();
+                        $("#controlBtn").show();
+                        $('#warning_panel').hide();
+                    }
+                });
+        }
+
+        function BootMOS() {
+            CheckStatus();
+
+            setTimeout(function() {
+                timertick(10)
+            }, 1000);
+        }
+
+        function timertick(timervalue) {
+            $("#timer").html(timervalue);
+            if (timervalue != 0)
+                setTimeout(function() {
+                    timertick(timervalue - 1)
+                }, 1000);
+        }
+    </script>
+</head>
+
+<body>
+    <article>
+        <h1>Dear Thomas</h1>
+        <p>
+			Saint Nicolas doesn't get why you'd want<br/>
+			A thing that will run amok in the house.<br/>
+			It will squeek at you and taunt.<br/>
+			Apparently it has escaped: your wireless mouse.
+		</p>
+
+        <p>
+			Wirelessly and tirelessly,<br/>
+			It has both wires and tyres inside.<br/>
+			Once tired, it will sit lifelessly,<br/>
+			But who knows where it will hide?
+		</p>
+
+		<p>
+			Be quiet now before you click,<br/>
+			Then chase after it on your knees,<br/>
+			You will have to be really quick,<br/>
+			So it will take you to the cheese!
+		</p>
+
+		<section id="startBtn">
+			<p><a href="javascript:BootMOS()" class="button blue">Boot Mouse Operating System <span id="timer"></span></a></p>
+		</section>
+    </article>
+    <section id="bootSeq">
+    </section>
+    <section id="controlBtn" class="w3-orange w3-card-8 w3-animate-top">
+        <h1>(M)ouse (O)perating (S)ystem</h1>
+        <p>Welcome Thomas,<br/><br/>You have the following commands at your disposal:</p>
+        <a href="javascript:DoSqueek('squeek')" class="button">Squeek</a>
+    </section>
+    <section id="warning_panel">
+        <div class="w3-panel w3-red">
+            <span class="w3-closebtn" onclick="$('#warning_panel').hide();">X</span>
+            <p id="display_error"></p>
+        </div>
+    </section>
+    <footer>
+        The cake is a lie!
+    </footer>
+</body>
+
+</html>

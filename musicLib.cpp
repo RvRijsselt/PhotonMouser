@@ -13,10 +13,10 @@ void setSpeakerPin(int pin)
 int frequency(char note)
 {
   int i;
-  const int numNotes = 8;
+  const int numNotes = 11;
 
-  char names[] = { 'c', 'd', 'e', 'f', 'g', 'a', 'b', 'C' };
-  int frequencies[] = {262, 294, 330, 349, 392, 440, 494, 523};
+  char names[] = { 'c', 'd', 'e', 'f', 'g', 'a', 'b', 'C', '#', '*', '!'};
+  int frequencies[] = {262, 294, 330, 349, 392, 440, 494, 523, 5000, 6000, 4000};
 
   for (i = 0; i < numNotes; i++)
   {
@@ -26,6 +26,26 @@ int frequency(char note)
     }
   }
   return(0);
+}
+
+void play(const String &notes, int tempo)
+{
+    unsigned int i, duration;
+    for (i = 0; i < notes.length(); i++)
+    {
+        duration = tempo;
+
+        if (notes[i] == ' ')
+        {
+            delay(duration);
+        }
+        else
+        {
+            tone(speakerPin1, frequency(notes[i]), duration);
+            delay(duration);
+        }
+        delay(tempo/10);
+    }
 }
 
 void playSong(const struct Song &song)

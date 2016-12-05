@@ -20,8 +20,8 @@ const char Right = Left - 90;
 
 /*
 curl https://api.spark.io/v1/devices/<deviceid>/cm?access_token=<accesstoken>
-curl https://api.spark.io/v1/devices/3e0041000447343138333038/cm?access_token=2acdc28d7946e796937d091a30fc3a36602deffe
-curl "https://api.particle.io/v1/devices/3e0041000447343138333038/squeek" -d "args=play" -d access_token=2acdc28d7946e796937d091a30fc3a36602deffe
+curl https://api.spark.io/v1/devices/<deviceid>/cm?access_token=<accesstoken>
+curl "https://api.particle.io/v1/devices/<deviceid>/squeek" -d "args=play" -d access_token=<accesstoken>
 */
 
 Servo myservo;
